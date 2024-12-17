@@ -13,7 +13,18 @@ const app = express()
 
 app.use(express.json())
 
-app.use(cors())
+app.use(cors({
+	origin: '*', // Allow requests from any origin
+	methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these methods
+	credentials: true // Allow credentials (cookies, etc.)
+  }));
+  app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	res.header("Access-Control-Allow-Headers", "Content-Type");
+	res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+	next();
+  });
 
 app.use(express.static(path.join(__dirname, "public"))) // Serve static files
 
@@ -21,6 +32,7 @@ const server = http.createServer(app)
 const io = new Server(server, {
 	cors: {
 		origin: "*",
+		credentials:true
 	},
 	maxHttpBufferSize: 1e8,
 	pingTimeout: 60000,
